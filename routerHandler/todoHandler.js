@@ -14,8 +14,9 @@ router.get("/", async (req, res) => {
       date: 0,
     })
     .limit(2)  //maintain  for data limit used
+     //exec main execution
     .exec((err, data) => {
-      //exec main execution
+     
       if (err) {
         res.status(500).json({
           error: "there was server site error!",
