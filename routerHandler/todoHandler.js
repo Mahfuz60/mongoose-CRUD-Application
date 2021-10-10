@@ -7,16 +7,15 @@ const todoSchema = require("../Schema/todoSchema");
 const Todo = new mongoose.model("Todo", todoSchema);
 
 //GET all the TODO
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
   Todo.find({ status: "active" }) //method chain used
     .select({
       _id: 0,
       date: 0,
     })
-    .limit(2)  //maintain  for data limit used
-     //exec main execution
+    .limit(2) //maintain  for data limit used
+    //exec main execution
     .exec((err, data) => {
-     
       if (err) {
         res.status(500).json({
           error: "there was server site error!",
@@ -31,24 +30,23 @@ router.get("/", async (req, res) => {
 });
 //GET A TODO by ID
 router.get("/:id", async (req, res) => {
-  Todo.find({_id:req.params.id},(err,data)=>{
-    if (err) {
-      res.status(500).json({
-        error: "there was server site error!",
-      });
-    } else {
-      res.status(200).json({
-        result: data,
-        message: "Success",
-      });
-    }
-
-  })
+  try {
+    const data = await Todo.find({ _id: req.params.id });
+    res.status(200).json({
+      result: data,
+      message: "Success",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: "there was server site error!",
+    });
+  }
 });
+
 //POST A TODO
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   const newTodo = new Todo(req.body);
-  await newTodo.save((err) => {
+  newTodo.save((err) => {
     if (err) {
       res.status(500).json({
         error: "there was server site error!",
@@ -59,10 +57,11 @@ router.post("/", async (req, res) => {
       });
     }
   });
+  console.log(newTodo);
 });
 //POST multiple TODO
-router.post("/multiple", async (req, res) => {
-  await Todo.insertMany(req.body, (err) => {
+router.post("/multiple", (req, res) => {
+   Todo.insertMany(req.body, (err) => {
     if (err) {
       res.status(500).json({
         error: "there was server site error!",
@@ -76,7 +75,7 @@ router.post("/multiple", async (req, res) => {
 });
 
 //PUT  TODO(update data)
-router.put("/:id", async (req, res) => {
+router.put("/:id", (req, res) => {
   const result = Todo.findByIdAndUpdate(
     //updateOne or findByIdAndUpdate same work her
     { _id: req.params.id },
@@ -106,21 +105,18 @@ router.put("/:id", async (req, res) => {
 });
 
 //DELETE TODO(delete data)
-router.delete("/:id", async (req, res) => {
-  Todo.deleteOne({_id:req.params.id},(err)=>{
+router.delete("/:id", (req, res) => {
+  Todo.deleteOne({ _id: req.params.id }, (err) => {
     if (err) {
       res.status(500).json({
         error: "there was server site error!",
       });
     } else {
       res.status(200).json({
-        
         message: "Todo was Deleted successfully done",
       });
     }
-
-  })
-
+  });
 });
 
 //export router
