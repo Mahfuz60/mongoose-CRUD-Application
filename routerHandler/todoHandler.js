@@ -6,6 +6,43 @@ const todoSchema = require("../Schema/todoSchema");
 //create a Todo model
 const Todo = new mongoose.model("Todo", todoSchema);
 
+//GET (instance method) used with active Todo
+router.get("/active", async (req, res) => {
+  const todo = new Todo();
+  const data = await todo.findActive();
+  res.status(200).json({
+    data: data,
+  });
+});
+
+//GET instance method used with callback function
+
+router.get("/active-callback", (req, res) => {
+  const todo = new Todo();
+  todo.findActiveCallback((err, data) => {
+    res.status(200).json({
+      data: data,
+    });
+  });
+});
+
+//Get used (statics method) with todo
+router.get("/js", async (req, res) => {
+  const data=await Todo.findByJs();
+  res.status(200).json({
+    data: data,
+  });
+
+});
+//Get used (queryHelper method) with todo
+router.get("/language", async (req, res) => {
+  const data=await Todo.find().byLanguage('mongodb');
+  res.status(200).json({
+    data: data,
+  });
+
+});
+
 //GET all the TODO
 router.get("/", (req, res) => {
   Todo.find({ status: "active" }) //method chain used
@@ -57,11 +94,11 @@ router.post("/", (req, res) => {
       });
     }
   });
-  console.log(newTodo);
+  //console.log(newTodo);
 });
 //POST multiple TODO
 router.post("/multiple", (req, res) => {
-   Todo.insertMany(req.body, (err) => {
+  Todo.insertMany(req.body, (err) => {
     if (err) {
       res.status(500).json({
         error: "there was server site error!",
