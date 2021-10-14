@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const todoSchema = require("../Schema/todoSchema");
+const checkLogin = require("./middlewares/checkLogin");
 
 //create a Todo model
 const Todo = new mongoose.model("Todo", todoSchema);
@@ -28,23 +29,22 @@ router.get("/active-callback", (req, res) => {
 
 //Get used (statics method) with todo
 router.get("/js", async (req, res) => {
-  const data=await Todo.findByJs();
+  const data = await Todo.findByJs();
   res.status(200).json({
     data: data,
   });
-
 });
 //Get used (queryHelper method) with todo
 router.get("/language", async (req, res) => {
-  const data=await Todo.find().byLanguage('mongodb');
+  const data = await Todo.find().byLanguage("mongodb");
   res.status(200).json({
     data: data,
   });
-
 });
 
 //GET all the TODO
-router.get("/", (req, res) => {
+router.get("/", checkLogin, (req, res) => {
+  console.log(req.userName, req.userId);
   Todo.find({ status: "active" }) //method chain used
     .select({
       _id: 0,

@@ -22,9 +22,9 @@ todoSchema.methods = {
   findActive: function () {
     return mongoose.model("Todo").find({ status: "active" });
   },
-  findActiveCallback: function (cb) {
-    return mongoose.model("Todo").find({ status: "active" }, cb);
-  },
+  // findActiveCallback: function (cb) {
+  //   return mongoose.model("Todo").find({ status: "active" }, cb);
+  // },
 };
 //Statics Method
 todoSchema.statics = {
