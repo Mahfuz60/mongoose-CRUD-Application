@@ -72,5 +72,26 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//GET all routers
+router.get('/all',async(req, res)=>{
+  try{
+    const users = await User.find({
+      status:'active'
+      
+    }).populate('todo');
+
+    res.status(200).json({
+      data:users,
+      message: "success"
+    })
+
+  }catch(err){
+    console.log(err);
+    res.status(500).json({
+      error:'there was server site error!';
+    })
+  }
+})
+
 //export router
 module.exports = router;

@@ -15,9 +15,13 @@ const todoSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
 });
 
-// instance method 
+// instance method
 todoSchema.methods = {
   findActive: function () {
     return mongoose.model("Todo").find({ status: "active" });
@@ -28,14 +32,14 @@ todoSchema.methods = {
 };
 //Statics Method
 todoSchema.statics = {
-  findByJs:function () {
-    return this.find({ title: /js/i });//:/js/i used regular expansion
+  findByJs: function () {
+    return this.find({ title: /js/i }); //:/js/i used regular expansion
   },
 };
 //Query Helpers method
 todoSchema.query = {
-  byLanguage:function (language) {
-    return this.find({ title: new RegExp(language,'i')});
+  byLanguage: function (language) {
+    return this.find({ title: new RegExp(language, "i") });
   },
 };
 
